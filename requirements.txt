@@ -1,0 +1,16 @@
+# Core
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-dotenv==1.0.1
+
+# Database
+sqlalchemy==2.0.35
+aiosqlite==0.20.0
+
+# GitHub & OpenAI
+pygithub==2.8.1
+openai==2.15.0
+
+# Utilities
+pydantic==2.12.5
+httpx==0.28.1

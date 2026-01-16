@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoScraper — Architecture Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Animated background -->
+        <div class="bg-grid"></div>
+        <div class="bg-glow"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">RepoScraper</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-view="search">
+                    <span class="nav-icon">⌘</span> Search
+                </button>
+                <button class="nav-btn" data-view="discover">
+                    <span class="nav-icon">◎</span> Discover
+                </button>
+                <button class="nav-btn" data-view="indexed">
+                    <span class="nav-icon">▤</span> Indexed
+                </button>
+            </nav>
+            <div class="header-status">
+                <span class="status-dot"></span>
+                <span class="status-text">API Connected</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Search View -->
+            <section class="view active" id="view-search">
+                <div class="hero">
+                    <h1 class="hero-title">Find repos by <span class="highlight">architecture</span></h1>
+                    <p class="hero-sub">Search indexed repositories by patterns, frameworks, and infrastructure</p>
+                </div>
+
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="architecture-search"
+                        placeholder="microservices python event-driven..."
+                        autocomplete="off"
+                    >
+                    <button class="search-btn" id="search-btn">
+                        <span>Search</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <div class="filter-row">
+                    <label class="filter">
+                        <span>Min confidence</span>
+                        <input type="range" id="min-confidence" min="0" max="100" value="50">
+                        <span class="filter-value" id="confidence-value">0.5</span>
+                    </label>
+                </div>
+
+                <div class="results-container" id="search-results">
+                    <div class="empty-state">
+                        <div class="empty-icon">◇</div>
+                        <p>Search for architectural patterns</p>
+                        <span class="empty-hint">Try: "microservices", "clean architecture", "kubernetes"</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Discover View -->
+            <section class="view" id="view-discover">
+                <div class="hero">
+                    <h1 class="hero-title">Discover <span class="highlight">repositories</span></h1>
+                    <p class="hero-sub">Search GitHub and ingest repos for architectural analysis</p>
+                </div>
+
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="github-search"
+                        placeholder="Search GitHub repositories..."
+                        autocomplete="off"
+                    >
+                    <select class="language-select" id="language-filter">
+                        <option value="">All Languages</option>
+                        <optgroup label="Popular">
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="java">Java</option>
+                            <option value="go">Go</option>
+                            <option value="rust">Rust</option>
+                            <option value="c++">C++</option>
+                            <option value="c">C</option>
+                            <option value="c#">C#</option>
+                        </optgroup>
+                        <optgroup label="Web & Frontend">
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="vue">Vue</option>
+                            <option value="svelte">Svelte</option>
+                            <option value="php">PHP</option>
+                            <option value="ruby">Ruby</option>
+                        </optgroup>
+                        <optgroup label="Mobile">
+                            <option value="swift">Swift</option>
+                            <option value="kotlin">Kotlin</option>
+                            <option value="dart">Dart</option>
+                            <option value="objective-c">Objective-C</option>
+                        </optgroup>
+                        <optgroup label="Systems & Low-Level">
+                            <option value="zig">Zig</option>
+                            <option value="assembly">Assembly</option>
+                            <option value="v">V</option>
+                            <option value="nim">Nim</option>
+                            <option value="d">D</option>
+                        </optgroup>
+                        <optgroup label="Functional">
+                            <option value="haskell">Haskell</option>
+                            <option value="elixir">Elixir</option>
+                            <option value="erlang">Erlang</option>
+                            <option value="clojure">Clojure</option>
+                            <option value="f#">F#</option>
+                            <option value="ocaml">OCaml</option>
+                            <option value="scala">Scala</option>
+                            <option value="racket">Racket</option>
+                        </optgroup>
+                        <optgroup label="Scripting">
+                            <option value="shell">Shell</option>
+                            <option value="bash">Bash</option>
+                            <option value="powershell">PowerShell</option>
+                            <option value="lua">Lua</option>
+                            <option value="perl">Perl</option>
+                            <option value="r">R</option>
+                            <option value="julia">Julia</option>
+                        </optgroup>
+                        <optgroup label="Data & ML">
+                            <option value="jupyter notebook">Jupyter Notebook</option>
+                            <option value="sql">SQL</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="groovy">Groovy</option>
+                            <option value="crystal">Crystal</option>
+                            <option value="fortran">Fortran</option>
+                            <option value="cobol">COBOL</option>
+                            <option value="pascal">Pascal</option>
+                            <option value="ada">Ada</option>
+                            <option value="solidity">Solidity</option>
+                            <option value="move">Move</option>
+                            <option value="wasm">WebAssembly</option>
+                        </optgroup>
+                    </select>
+                    <button class="search-btn" id="github-search-btn">
+                        <span>Search GitHub</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+
+                <div class="filter-row">
+                    <label class="filter">
+                        <span>Min stars</span>
+                        <input type="number" id="min-stars" value="1000" min="0" step="100">
+                    </label>
+                </div>
+
+                <div class="results-container" id="github-results">
+                    <div class="empty-state">
+                        <div class="empty-icon">☆</div>
+                        <p>Search GitHub to discover repositories</p>
+                        <span class="empty-hint">Results can be ingested for AI analysis</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Indexed View -->
+            <section class="view" id="view-indexed">
+                <div class="hero">
+                    <h1 class="hero-title">Indexed <span class="highlight">repositories</span></h1>
+                    <p class="hero-sub">All repositories analyzed and stored in the database</p>
+                </div>
+
+                <div class="stats-row" id="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-repos">—</span>
+                        <span class="stat-label">Repositories</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-tags">—</span>
+                        <span class="stat-label">Architecture Tags</span>
+                    </div>
+                </div>
+
+                <div class="tags-section" id="tags-section">
+                    <h3 class="section-title">Popular Tags</h3>
+                    <div class="tags-cloud" id="tags-cloud"></div>
+                </div>
+
+                <div class="results-container" id="indexed-results">
+                    <div class="loading">Loading indexed repositories...</div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Toast notifications -->
+        <div class="toast-container" id="toast-container"></div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
