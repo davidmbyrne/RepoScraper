@@ -237,7 +237,8 @@ async function ingestRepo(fullName, button) {
         });
         
         if (!res.ok) {
-            throw new Error('Ingestion failed');
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.detail || `Ingestion failed (${res.status})`);
         }
         
         const data = await res.json();

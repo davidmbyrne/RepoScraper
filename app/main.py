@@ -63,6 +63,18 @@ async def health_check():
     return {"status": "healthy", "app": settings.APP_NAME}
 
 
+@app.get("/api/debug/config")
+async def debug_config():
+    """Debug endpoint to check if environment variables are configured."""
+    return {
+        "openai_configured": bool(settings.OPENAI_API_KEY and len(settings.OPENAI_API_KEY) > 10),
+        "github_configured": bool(settings.GITHUB_TOKEN and len(settings.GITHUB_TOKEN) > 10),
+        "openai_key_prefix": settings.OPENAI_API_KEY[:8] + "..." if settings.OPENAI_API_KEY else "NOT SET",
+        "github_key_prefix": settings.GITHUB_TOKEN[:8] + "..." if settings.GITHUB_TOKEN else "NOT SET",
+        "model": settings.OPENAI_MODEL,
+    }
+
+
 # --- GitHub Endpoints ---
 
 @app.get("/api/github/search")
@@ -140,8 +152,14 @@ async def ingest_repository(
     
     # Run analysis if requested
     if analyze and readme:
+        if not settings.OPENAI_API_KEY:
+            raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured on server")
+        
         file_tree = github_service.get_file_tree(full_name)
-        analysis = analysis_service.analyze_architecture(readme, full_name, file_tree)
+        try:
+            analysis = analysis_service.analyze_architecture(readme, full_name, file_tree)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
         
         # Store architecture tags
         for pattern in analysis.architectural_patterns:
